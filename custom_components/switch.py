@@ -12,8 +12,12 @@ from homeassistant.const import CONF_NAME, CONF_DEVICES
 from homeassistant.components.switch import SwitchDevice, PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
 
-DEPENDENCIES = ['domintell']
-DOMAIN = 'domintell'
+from .const import (DOMAIN)
+
+
+# REQUIREMENTS = ['python-domintell==0.1.0']
+# DEPENDENCIES = ['domintell']
+# DOMAIN = 'domintell'
 
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(10)
@@ -26,12 +30,13 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
             vol.Optional('type', default=DOM_TRP): cv.string,
             vol.Required('module'): cv.string,
             vol.Required('channel'): cv.positive_int,
-            vol.Required(CONF_NAME): cv.string
+            vol.Required(CONF_NAME): cv.string,
+            vol.Optional('path'): cv.string
         }
     ])
 })
 
-def setup_platform(hass, config, add_devices, discovery_info=None):
+async def async_setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up switch."""
     domintell = hass.data[DOMAIN]
     add_devices(create_switch(switch, domintell) for switch in config[CONF_DEVICES])

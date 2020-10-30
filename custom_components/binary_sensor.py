@@ -12,12 +12,18 @@ from homeassistant.const import CONF_NAME, CONF_DEVICES
 from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
-import homeassistant.helpers.config_validation as cv
 
-DEPENDENCIES = ['domintell']
-DOMAIN = 'domintell'
+from .const import (DOMAIN)
+
+
+# REQUIREMENTS = ['python-domintell==0.1.0']
+# DEPENDENCIES = ['domintell']
+# DOMAIN = 'domintell'
 
 _LOGGER = logging.getLogger(__name__)
+
+_LOGGER.debug('entered Sensor $$$$$$$$$$$$$$')
+
 
 DOM_IS8 = 'IS8' # 8 inputs DI sensor
 DOM_IS4 = 'IS4' # 4 inputs DI sensor
@@ -31,11 +37,14 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
             vol.Required('module'): cv.string,
             vol.Required('channel'): cv.positive_int,
             vol.Required(CONF_NAME): cv.string,
+            vol.Optional('location'): cv.string,
+            vol.Optional('device_class'): cv.string,
+
         }
     ])
 })
 
-def setup_platform(hass, config, add_devices, discovery_info=None):
+async def async_setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up switch."""
     domintell = hass.data[DOMAIN]
     add_devices(create_sensor(sensor, domintell) for sensor in config[CONF_DEVICES])

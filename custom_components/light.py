@@ -9,15 +9,19 @@ import logging
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
-from homeassistant.components.light import ATTR_BRIGHTNESS, Light, PLATFORM_SCHEMA, SUPPORT_BRIGHTNESS
+from homeassistant.components.light import ATTR_BRIGHTNESS, Light, LightEntity, PLATFORM_SCHEMA, SUPPORT_BRIGHTNESS
 from homeassistant.const import CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_DEVICES, CONF_NAME
 import homeassistant.helpers.config_validation as cv
 
-DEPENDENCIES = ['domintell']
-DOMAIN = 'domintell'
+from .const import (DOMAIN)
+
+
+# REQUIREMENTS = ['python-domintell==0.1.0']
+# DEPENDENCIES = ['domintell']
+# DOMAIN = 'domintell'
 
 _LOGGER = logging.getLogger(__name__)
-_LOGGER.setLevel(10)
+
 
 DOM_BIR = 'BIR' # 8 - relay controller
 DOM_TRP = 'DMR' # 5 - relay controller
@@ -30,24 +34,27 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
             vol.Optional('type', default=DOM_BIR): cv.string,
             vol.Required('module'): cv.string,
             vol.Required('channel'): cv.positive_int,
-            vol.Required(CONF_NAME): cv.string
+            vol.Required(CONF_NAME): cv.string,
+            vol.Optional('location'): cv.string
         }
     ])
 })
 
-def setup_platform(hass, config, add_devices, discovery_info=None):
+async def async_setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up Lights."""
     domintell = hass.data[DOMAIN]
+    # _LOGGER.warning('Creating lights =========================== ')
     add_devices(create_light(light, domintell) for light in config[CONF_DEVICES])
 
 
 def create_light(light, domintell):
         module_type = light['type']
+        # _LOGGER.warning('creating light %s', light[CONF_NAME])
         if  module_type in [DOM_DIM]:
             return DomintellDimmerLight(light, domintell)
         return DomintellLight(light, domintell)
 
-class DomintellLight(Light):
+class DomintellLight(LightEntity):
     """Representation of a Domintell Light."""
 
     def __init__(self, light, domintell):

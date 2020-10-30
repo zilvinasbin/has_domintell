@@ -10,11 +10,18 @@ import voluptuous as vol
 
 from homeassistant.const import CONF_NAME, CONF_DEVICES
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.climate import ( PLATFORM_SCHEMA, SUPPORT_OPERATION_MODE,
-    ClimateDevice, SUPPORT_TARGET_TEMPERATURE, SUPPORT_AWAY_MODE, SUPPORT_HOLD_MODE)
+from homeassistant.components.climate import ( PLATFORM_SCHEMA, HVAC_MODES,
+#     ClimateDevice, SUPPORT_HOLD_MODE)
+#    ClimateDevice, SUPPORT_TARGET_TEMPERATURE, SUPPORT_AWAY_MODE, SUPPORT_HOLD_MODE)
+    ClimateDevice, SUPPORT_TARGET_TEMPERATURE, SUPPORT_PRESET_MODE)
+from homeassistant.components.climate.const import (PRESET_AWAY, PRESET_NONE, PRESET_COMFORT, PRESET_HOME, HVAC_MODE_HEAT_COOL, HVAC_MODE_OFF)
 from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT, ATTR_TEMPERATURE
 
-SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_AWAY_MODE  | SUPPORT_HOLD_MODE | SUPPORT_OPERATION_MODE
+from .const import (DOMAIN)
+
+
+# SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_AWAY_MODE  | SUPPORT_HOLD_MODE | HVAC_MODES
+SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 
 DOM_ABSENCE = 1
 DOM_AUTO = 2
@@ -28,8 +35,9 @@ OP_COMFORT = 'Comfort'
 OP_FROST = 'Frost'
 OP_MANUAL = 'Manual'
 
-DEPENDENCIES = ['domintell']
-DOMAIN = 'domintell'
+# REQUIREMENTS = ['python-domintell==0.1.0']
+# DEPENDENCIES = ['domintell']
+# DOMAIN = 'domintell'
 
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(10)
@@ -44,12 +52,14 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
             vol.Optional('type', default=DOM_TE1): cv.string,
             vol.Required('module'): cv.string,
             vol.Optional('channel', default=1): cv.positive_int,
-            vol.Required(CONF_NAME): cv.string
+            vol.Required(CONF_NAME): cv.string,
+            vol.Optional('force_update'): cv.string,
+            vol.Optional('location'): cv.string,
         }
     ])
 })
 
-def setup_platform(hass, config, add_devices, discovery_info=None):
+async def async_setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up Climate device."""
     domintell = hass.data[DOMAIN]
     add_devices(create_device(device, domintell) for device in config[CONF_DEVICES])
@@ -70,6 +80,7 @@ def operation_mode_str(mode):
     elif mode == DOM_MANUAL:
         return OP_MANUAL
     return OP_AUTO
+
 
 class DomintellClimateDevice(ClimateDevice):
     """Representation of a Domintell ClimateDevice."""
@@ -171,33 +182,57 @@ class DomintellClimateDevice(ClimateDevice):
 
         self.schedule_update_ha_state()
 
-    def set_operation_mode(self, operation_mode):
+    def set_hvac_mode(self, hvac_mode):
+        m = self._domintell.get_module(self._module)
+        if m:
+            if hvac_mode == HVAC_MODE_HEAT_COOL:
+                m.set_automatic()
+            elif operation_mode == HVAC_MODE_OFF:
+                m.set_frost()
+        self.schedule_update_ha_state()
+
+    def set_preset_mode(self, operation_mode):
         """Set new target operation mode."""
         m = self._domintell.get_module(self._module)
         if m:
-            if operation_mode == OP_AUTO:
+            if operation_mode == PRESET_NONE:
                 m.set_automatic()
-            elif operation_mode == OP_COMFORT:
+            elif operation_mode == PRESET_COMFORT:
                 m.set_comfort()
-            elif operation_mode == OP_FROST:
-                m.set_frost()
-            elif operation_mode == OP_ABSENCE:
+            elif operation_mode == PRESET_HOME:
+                m.set_automatic()
+            elif operation_mode == PRESET_AWAY:
                 m.set_absence()
         self.schedule_update_ha_state()
 
-    def turn_away_mode_on(self):
-        """Turn away mode on."""
-        m = self._domintell.get_module(self._module)
-        if m:
-            m.set_absence()
-        self.schedule_update_ha_state()
+    @property
+    def preset_modes(sefl):
+        return [PRESET_NONE, PRESET_COMFORT, PRESET_HOME, PRESET_AWAY]
 
-    def turn_away_mode_off(self):
-        """Turn away mode off."""
-        m = self._domintell.get_module(self._module)
-        if m:
-            m.set_automatic()
-        self.schedule_update_ha_state()
+    @property
+    def preset_mode(self):
+        if self._mode == DOM_ABSENCE:
+            return PRESET_AWAY
+        elif self._mode == DOM_COMFORT:
+            return PRESET_COMFORT
+        else:
+            return PRESET_NONE    
+
+    @property
+    def hvac_mode(self):
+        """Return hvac operation ie. heat, cool mode.
+        Need to be one of HVAC_MODE_*.
+        """
+        if self._mode == DOM_ABSENCE:
+            return HVAC_MODE_OFF
+        return HVAC_MODE_HEAT_COOL
+
+    @property
+    def hvac_modes(self):
+        """Return the list of available hvac operation modes.
+        Need to be a subset of HVAC_MODES.
+        """
+        return [HVAC_MODE_HEAT_COOL, HVAC_MODE_OFF]
 
     @property
     def is_on(self):

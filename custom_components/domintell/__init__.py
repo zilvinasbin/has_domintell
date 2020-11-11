@@ -25,7 +25,7 @@ from .const import (
     DOMINTELL_MESSAGE
 )
 
-# REQUIREMENTS = ['python-domintell==0.0.10']
+# REQUIREMENTS = ['python-domintell==0.0.12']
 
 _LOGGER = logging.getLogger(__name__)
 

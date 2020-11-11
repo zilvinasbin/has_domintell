@@ -4,6 +4,6 @@
   "documentation": "https://github.com/shamanenas/has_domintell",
   "dependencies": ["mqtt"],
   "codeowners": ["@zilvinas"],
-  "requirements": ["python-domintell==0.0.11"],
+  "requirements": ["python-domintell==0.0.14"],
   "quality_scale": "Silver"
 }

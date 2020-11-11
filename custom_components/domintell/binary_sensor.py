@@ -16,7 +16,7 @@ import homeassistant.helpers.config_validation as cv
 from .const import (DOMAIN)
 
 
-# REQUIREMENTS = ['python-domintell==0.1.0']
+# REQUIREMENTS = ['python-domintell==0.1.12']
 # DEPENDENCIES = ['domintell']
 # DOMAIN = 'domintell'
 
@@ -29,6 +29,10 @@ DOM_IS8 = 'IS8' # 8 inputs DI sensor
 DOM_IS4 = 'IS4' # 4 inputs DI sensor
 DOM_BU4 = 'BU4' # 4 inputs button block
 DOM_DET = 'DET' # movement detector (1 DI)
+
+
+DOM_VAR = 'VAR' # Binary variable (only binary implemented)
+
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_DEVICES): vol.All(cv.ensure_list, [

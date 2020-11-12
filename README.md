@@ -103,7 +103,7 @@ Configure connection to DETH02 module in your __configuration.yaml__
 * __location__ - Location of a sensor, output (Currently Not used for Home Assistant)
 
 # Dependencies
-This module depends on python-domintell
+This module depends on python-domintell (ver 0.0.16)
 
 More info at https://pypi.org/project/python-domintell/
 
@@ -113,6 +113,7 @@ More info at https://pypi.org/project/python-domintell/
 * switch
 * climate
 * binary sensor
+* binary variable VAR (binary only)
 
 # Supported Home Assistant versions
 * 0.117.0 (https://www.home-assistant.io/blog/2020/10/28/release-117/)

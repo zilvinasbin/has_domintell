@@ -1,10 +1,12 @@
-# has_domintell
+# Domintell Smart Home integration custom component for Home Assistant (has_domintell)
 Domintell modules for Home Assistant
 
 Basic Home Assistant modules mapped to domintell devices
 
 # Installation
-Copy contents of the *custom_components* folder to your home assistants' */config/custom_components*
+1. Copy contents of the *custom_components* folder to your home assistants' */config/custom_components*
+1. Configure component via configuration.yaml (see instructions below)
+1. Restart home assistant
 
 # Configuration
 
@@ -14,6 +16,8 @@ Configure connection to DETH02 module in your __configuration.yaml__
     domintell:
       host: !secret deth02_host
       password: !secret deth02_pass
+
+**Note:** If your DETH02 has no password set, put 'LOGIN' instead of password.
 
 ## Configure lights
 
@@ -45,7 +49,7 @@ Configure connection to DETH02 module in your __configuration.yaml__
 
 * __type: BIR__ - Ordinary light using domintell DBIR modules 
 * __type: DIM__ - Dimmer using Domintell DDIM modules
-* __module__ -  domintell module ID, can be found printed on module, or through domintell configuration app
+* __module__ -  domintell module ID (Hex), can be found printed on module, or through domintell configuration app. Please note that Domintell have changed Hex IDs to Decimal in their app. *You need to convert it back to Hex and use in this configuration.*
 * __channel: 1, 2, 3__ - Output number of Dimintell module (depends on how many output module has)
 * __name__ - Friendly name (will be visible in Home Assistant)
 * __location__ - Location of a sensor, output (Currently Not used for Home Assistant)
@@ -108,7 +112,7 @@ This module depends on python-domintell (ver 0.0.16)
 More info at https://pypi.org/project/python-domintell/
 
 
-# Supported HAS devices
+# Supported HA devices
 * light
 * switch
 * climate
@@ -116,5 +120,7 @@ More info at https://pypi.org/project/python-domintell/
 * binary variable VAR (binary only)
 
 # Supported Home Assistant versions
+* 2020.12.7
+* 0.118.0
 * 0.117.0 (https://www.home-assistant.io/blog/2020/10/28/release-117/)
 * 0.116

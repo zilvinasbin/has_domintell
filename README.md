@@ -8,42 +8,53 @@ Basic Home Assistant modules mapped to domintell devices
 1. Configure component via configuration.yaml (see instructions below)
 1. Restart home assistant
 
+**Note:** You should not need to install python-domintell manually, it will be installed automatically
+
 # Configuration
 
 Configure connection to DETH02 module in your __configuration.yaml__
 
-    # DOMINTEL
-    domintell:
-      host: !secret deth02_host
-      password: !secret deth02_pass
+```
+# DOMINTEL
+domintell:
+  host: deth02_host_ip:17481
+  password: !secret deth02_pass
+```
 
-**Note:** If your DETH02 has no password set, put 'LOGIN' instead of password.
+**Notes:** 
+* Please specify UDP port for deth02 module. Default port is 17481. If port number is omited Serial connection will be used instead.
+* If your DETH02 has no password set, put 'LOGIN' instead of password.
+* It is absolutelly recomened to move host ip and passwords to secrets file!
+
 
 ## Configure lights
 
-    # LIGHTS and LAMPS
-    - platform: domintell
-        devices:
-        - type: BIR
-          module: 1AE4       
-          channel: 1
-          name: My night lamp       
-          location: Home|Second floor|My Room
-        - type: BIR
-          module: 1AE4       
-          channel: 2
-          name: Emmas bed light       
-          location: Home|Second floor|My Room
-        - type: DIM
-          module:  ACF       
-          channel: 1
-          name: TV zone (dimmer)       
-          location: Home|First floor|Main Room
-        - type: DIM
-          module:  ACF       
-          channel: 2
-          name: Kitchen       
-          location: Home|First floor|Kitchen
+```
+# LIGHTS and LAMPS
+light:
+  - platform: domintell
+      devices:
+      - type: BIR
+        module: 1AE4       
+        channel: 1
+        name: My night lamp       
+        location: Home|Second floor|My Room
+      - type: BIR
+        module: 1AE4       
+        channel: 2
+        name: Emmas bed light       
+        location: Home|Second floor|My Room
+      - type: DIM
+        module:  ACF       
+        channel: 1
+        name: TV zone (dimmer)       
+        location: Home|First floor|Main Room
+      - type: DIM
+        module:  ACF       
+        channel: 2
+        name: Kitchen       
+        location: Home|First floor|Kitchen
+```
 
 ### Parameters
 
@@ -58,20 +69,23 @@ Configure connection to DETH02 module in your __configuration.yaml__
 
 ## Binary sensors & buttons
 
-    #Domintell buttons and sensors
-    # IS4, IS8
-    - platform: domintell
-        devices:
-        - type: IS8
-          module: 247C
-          channel: 1
-          name: My button
-          location: Home|First floor|Kitchen
-        - type: IS8
-          module: 247C
-          channel: 2
-          name: My sensor
-          location: Home|First floor|Kitchen
+```
+#Domintell buttons and sensors
+binary_sensor:     
+  # IS4, IS8
+  - platform: domintell
+      devices:
+      - type: IS8
+        module: 247C
+        channel: 1
+        name: My button
+        location: Home|First floor|Kitchen
+      - type: IS8
+        module: 247C
+        channel: 2
+        name: My sensor
+        location: Home|First floor|Kitchen
+```
 
 ### Parameters
 
@@ -88,16 +102,17 @@ Configure connection to DETH02 module in your __configuration.yaml__
 
 
 ## Climate
-
-    - platform: domintell
-      devices:
-        - type: TE1   
-          module: 898
-          channel: 1
-          name: Bedroom T°
-          force_update: true
-          location: Home|Second floor|Bedroom
-
+```
+climate:
+  - platform: domintell
+    devices:
+      - type: TE1   
+        module: 898
+        channel: 1
+        name: Bedroom T°
+        force_update: true
+        location: Home|Second floor|Bedroom
+```
 ### Parameters
 
 * __type: TE1__ - Module TE1
@@ -120,6 +135,7 @@ More info at https://pypi.org/project/python-domintell/
 * binary variable VAR (binary only)
 
 # Supported Home Assistant versions
+* core-2021.1.5 ___(Running now)___
 * 2020.12.7
 * 0.118.0
 * 0.117.0 (https://www.home-assistant.io/blog/2020/10/28/release-117/)

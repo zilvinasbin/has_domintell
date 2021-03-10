@@ -20,6 +20,7 @@ from .const import (
     CONF_CLIMATE,
     CONF_SWITCH,
     CONF_LIGHT,
+	CONF_COVER,
     VERSION,
     DOMAIN,
     DOMINTELL_MESSAGE

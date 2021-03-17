@@ -64,6 +64,7 @@ class DomintellLight(LightEntity):
         self._name = light[CONF_NAME]
         self._module = light['module']
         self._channel = light['channel'] - 1 # we use 0 based index internally
+        self._id = f"{self._module}-{self._channel}"
         self._type = light['type']
         self._state = False
 
@@ -89,6 +90,11 @@ class DomintellLight(LightEntity):
                 self._state = m.is_on(self._channel)
             self.schedule_update_ha_state()
 
+    @property
+    def unique_id(self):
+        """Return the unique_id of this light."""
+        return self._id
+    
     @property
     def name(self):
         """Return the display name of this light."""

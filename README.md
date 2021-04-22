@@ -122,7 +122,7 @@ climate:
 * __location__ - Location of a sensor, output (Currently Not used for Home Assistant)
 
 # Dependencies
-This module depends on python-domintell (ver 0.0.16)
+This module depends on python-domintell (ver 0.0.17)
 
 More info at https://pypi.org/project/python-domintell/
 

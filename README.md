@@ -135,7 +135,8 @@ More info at https://pypi.org/project/python-domintell/
 * binary variable VAR (binary only)
 
 # Supported Home Assistant versions
-* core-2021.1.5 ___(Running now)___
+* core-2021.4.6 ___(Running now)___
+* core-2021.1.5 
 * 2020.12.7
 * 0.118.0
 * 0.117.0 (https://www.home-assistant.io/blog/2020/10/28/release-117/)

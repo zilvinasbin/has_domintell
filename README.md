@@ -121,10 +121,48 @@ climate:
 * __name__ - Friendly name (will be visible in Home Assistant)
 * __location__ - Location of a sensor, output (Currently Not used for Home Assistant)
 
+## Switches
+**Using DTRP01 Domintell module**
+
+```
+switch: 
+  - platform: domintell
+    devices:
+      - type: TRP 
+        module: 850
+        channel: 1
+        name: Parents room sockets
+        path: Namas|2nd Floor|Master Bedroom
+      - type: TRP
+        module: 850
+        channel: 2
+        name: Parents TV
+        path: Namas|2nd Floor|Master Bedroom
+      - type: TRP
+        module: 850
+        channel: 3
+        name: Bathroom sockets
+        path: Namas|2nd Floor|Bathroom
+      - type: TRP
+        module: 850
+        channel: 4
+        name: Kids PC
+        path: Namas|2nd Floor|Bedroom
+```
+### Parameters
+
+* __type: TRP__ - Trip switch using Domintell DTRP01 module
+* __module__ -  domintell module ID (Hex), can be found printed on module, or through domintell configuration app. Please note that Domintell have changed Hex IDs to Decimal in their app. *You need to convert it back to Hex and use in this configuration.*
+* __channel: 1, 2, 3, 4__ - Output number of Dimintell module (depends on how many output module has)
+* __name__ - Friendly name (will be visible in Home Assistant)
+* __path__ - Location of a sensor, output (Currently Not used for Home Assistant)
+
+
 # Dependencies
 This module depends on python-domintell (ver 0.0.17)
 
 More info at https://pypi.org/project/python-domintell/
+
 
 
 # Supported HA devices

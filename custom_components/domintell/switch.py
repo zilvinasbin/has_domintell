@@ -9,7 +9,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.const import CONF_NAME, CONF_DEVICES
-from homeassistant.components.switch import SwitchDevice, PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchEntity, PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
 
 from .const import (DOMAIN)
@@ -46,7 +46,7 @@ def create_switch(switch, domintell):
         module_type = switch['type']
         return DomintellSwitch(switch, domintell)
 
-class DomintellSwitch(SwitchDevice):
+class DomintellSwitch(SwitchEntity):
     """Representation of a Domintell Switch."""
 
     def __init__(self, switch, domintell):

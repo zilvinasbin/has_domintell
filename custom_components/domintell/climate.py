@@ -13,7 +13,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.climate import ( PLATFORM_SCHEMA, HVAC_MODES,
 #     ClimateDevice, SUPPORT_HOLD_MODE)
 #    ClimateDevice, SUPPORT_TARGET_TEMPERATURE, SUPPORT_AWAY_MODE, SUPPORT_HOLD_MODE)
-    ClimateDevice, SUPPORT_TARGET_TEMPERATURE, SUPPORT_PRESET_MODE)
+    ClimateEntity, SUPPORT_TARGET_TEMPERATURE, SUPPORT_PRESET_MODE)
 from homeassistant.components.climate.const import (PRESET_AWAY, PRESET_NONE, PRESET_COMFORT, PRESET_HOME, HVAC_MODE_HEAT_COOL, HVAC_MODE_OFF)
 from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT, ATTR_TEMPERATURE
 
@@ -82,7 +82,7 @@ def operation_mode_str(mode):
     return OP_AUTO
 
 
-class DomintellClimateDevice(ClimateDevice):
+class DomintellClimateDevice(ClimateEntity):
     """Representation of a Domintell ClimateDevice."""
 
     def __init__(self, device, domintell):

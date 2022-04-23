@@ -3,6 +3,7 @@
   "name": "Domintell Integration",
   "version": "1.0.0",
   "documentation": "https://github.com/shamanenas/has_domintell",
+  "dependencies": ["mqtt"],
   "codeowners": ["@zilvinas"],
   "requirements": ["python-domintell==0.0.17"],
   "quality_scale": "Silver"

@@ -10,7 +10,6 @@ CONF_SENSOR = "sensor"
 CONF_CLIMATE = "climate"
 CONF_SWITCH = "switch"
 CONF_LIGHT = "light"
-CONF_COVER = "cover"
 
 # OTHER
 DOMINTELL_MESSAGE = 'domintell.message'

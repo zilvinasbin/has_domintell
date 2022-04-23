@@ -9,7 +9,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.const import CONF_NAME, CONF_DEVICES
-from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
 
@@ -58,7 +58,7 @@ def create_sensor(sensor, domintell):
         module_type = sensor['type']
         return DomintellBinarySensor(sensor, domintell)
 
-class DomintellBinarySensor(BinarySensorDevice):
+class DomintellBinarySensor(BinarySensorEntity):
     """Representation of a Domintell Binary sensor."""
 
     def __init__(self, sensor, domintell):

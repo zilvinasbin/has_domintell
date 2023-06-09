@@ -73,8 +73,7 @@ class DomintellBinarySensor(BinarySensorEntity):
 
         dev = domintell.add_module(self._type, self._module)
 
-    @asyncio.coroutine
-    def async_added_to_hass(self):
+    async def async_added_to_hass(self):
         """Add listener for Domintell messages on bus."""
         
         def _init_domintell():
@@ -82,7 +81,7 @@ class DomintellBinarySensor(BinarySensorEntity):
             self._domintell.subscribe(self._on_message)
             self.get_status()
 
-        yield from self.hass.async_add_job(_init_domintell)
+        await self.hass.async_add_job(_init_domintell)
 
     def _on_message(self, message):
         import domintell

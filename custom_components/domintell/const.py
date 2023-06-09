@@ -2,7 +2,7 @@
 
 # Base constants
 DOMAIN = "domintell"
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 
 # Configuration
 CONF_BINARY_SENSOR = "binary_sensor"

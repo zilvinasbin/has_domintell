@@ -11,7 +11,7 @@ import voluptuous as vol
 from homeassistant.const import CONF_NAME, CONF_DEVICES import homeassistant.helpers.config_validation as cv
 from homeassistant.components.climate import ( PLATFORM_SCHEMA, ClimateEntity )
 from homeassistant.components.climate.const import (PRESET_AWAY, PRESET_NONE, PRESET_COMFORT, PRESET_HOME, ClimateEntityFeature, HVACMode)
-from homeassistant.const import TEMP_CELSIUS, ATTR_TEMPERATURE
+from homeassistant.const import UnitOfTemperature, ATTR_TEMPERATURE
 
 from .const import (DOMAIN)
 
@@ -90,7 +90,7 @@ class DomintellClimateDevice(ClimateEntity):
         self._type = device['type']
         self._support_flags = SUPPORT_FLAGS
 
-        self._unit_of_measurement = TEMP_CELSIUS
+        self._unit_of_measurement = UnitOfTemperature.CELSIUS
         self._mode = DOM_AUTO
 
         self._current_temperature = None

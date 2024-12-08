@@ -7,21 +7,17 @@ https://home-assistant.io/components/light.domintell/
 import asyncio
 import logging
 import voluptuous as vol
-
-from homeassistant.const import CONF_NAME, CONF_DEVICES
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.climate import ( PLATFORM_SCHEMA, HVAC_MODES,
-#     ClimateDevice, SUPPORT_HOLD_MODE)
-#    ClimateDevice, SUPPORT_TARGET_TEMPERATURE, SUPPORT_AWAY_MODE, SUPPORT_HOLD_MODE)
-    ClimateEntity, SUPPORT_TARGET_TEMPERATURE, SUPPORT_PRESET_MODE)
-from homeassistant.components.climate.const import (PRESET_AWAY, PRESET_NONE, PRESET_COMFORT, PRESET_HOME, HVAC_MODE_HEAT_COOL, HVAC_MODE_OFF)
-from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT, ATTR_TEMPERATURE
+
+from homeassistant.const import CONF_NAME, CONF_DEVICES 
+from homeassistant.components.climate import ( PLATFORM_SCHEMA, ClimateEntity )
+from homeassistant.components.climate.const import (PRESET_AWAY, PRESET_NONE, PRESET_COMFORT, PRESET_HOME, ClimateEntityFeature, HVACMode)
+from homeassistant.const import UnitOfTemperature, ATTR_TEMPERATURE
 
 from .const import (DOMAIN)
 
 
-# SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_AWAY_MODE  | SUPPORT_HOLD_MODE | HVAC_MODES
-SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
+SUPPORT_FLAGS = ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE
 
 DOM_ABSENCE = 1
 DOM_AUTO = 2
@@ -95,7 +91,7 @@ class DomintellClimateDevice(ClimateEntity):
         self._type = device['type']
         self._support_flags = SUPPORT_FLAGS
 
-        self._unit_of_measurement = TEMP_CELSIUS
+        self._unit_of_measurement = UnitOfTemperature.CELSIUS
         self._mode = DOM_AUTO
 
         self._current_temperature = None
@@ -184,9 +180,9 @@ class DomintellClimateDevice(ClimateEntity):
     def set_hvac_mode(self, hvac_mode):
         m = self._domintell.get_module(self._module)
         if m:
-            if hvac_mode == HVAC_MODE_HEAT_COOL:
+            if hvac_mode == HVACMode.HEAT_COOL:
                 m.set_automatic()
-            elif operation_mode == HVAC_MODE_OFF:
+            elif operation_mode == HVACMode.OFF:
                 m.set_frost()
         self.schedule_update_ha_state()
 
@@ -220,18 +216,17 @@ class DomintellClimateDevice(ClimateEntity):
     @property
     def hvac_mode(self):
         """Return hvac operation ie. heat, cool mode.
-        Need to be one of HVAC_MODE_*.
         """
         if self._mode == DOM_ABSENCE:
-            return HVAC_MODE_OFF
-        return HVAC_MODE_HEAT_COOL
+            return HVACMode.OFF
+        return HVACMode.HEAT_COOL
 
     @property
     def hvac_modes(self):
         """Return the list of available hvac operation modes.
         Need to be a subset of HVAC_MODES.
         """
-        return [HVAC_MODE_HEAT_COOL, HVAC_MODE_OFF]
+        return [HVACMode.HEAT_COOL, HVACMode.OFF]
 
     @property
     def is_on(self):

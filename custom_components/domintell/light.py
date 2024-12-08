@@ -7,11 +7,11 @@ https://home-assistant.io/components/light.domintell/
 import asyncio
 import logging
 import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
 
 # Import the device class from the component that you want to support
-from homeassistant.components.light import ATTR_BRIGHTNESS, LightEntity, PLATFORM_SCHEMA, SUPPORT_BRIGHTNESS
-from homeassistant.const import CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_DEVICES, CONF_NAME
-import homeassistant.helpers.config_validation as cv
+from homeassistant.components.light import ATTR_BRIGHTNESS, LightEntity, PLATFORM_SCHEMA, ColorMode
+from homeassistant.const import CONF_DEVICES, CONF_NAME
 
 from .const import (DOMAIN)
 
@@ -140,9 +140,14 @@ class DomintellDimmerLight(DomintellLight):
     def brightness(self):
         return int(self._brightness * 255 / 100)
 
+
     @property
-    def supported_features(self):
-        return SUPPORT_BRIGHTNESS
+    def supported_color_modes(self):
+        return {ColorMode.BRIGHTNESS}
+
+    @property
+    def color_mode(self):
+        return ColorMode.BRIGHTNESS
 
     def turn_on(self, **kwargs):
         """Instruct the light to turn on."""

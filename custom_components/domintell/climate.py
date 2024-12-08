@@ -7,8 +7,9 @@ https://home-assistant.io/components/light.domintell/
 import asyncio
 import logging
 import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
 
-from homeassistant.const import CONF_NAME, CONF_DEVICES import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_NAME, CONF_DEVICES 
 from homeassistant.components.climate import ( PLATFORM_SCHEMA, ClimateEntity )
 from homeassistant.components.climate.const import (PRESET_AWAY, PRESET_NONE, PRESET_COMFORT, PRESET_HOME, ClimateEntityFeature, HVACMode)
 from homeassistant.const import UnitOfTemperature, ATTR_TEMPERATURE

@@ -66,8 +66,8 @@ class DomintellLight(LightEntity):
         self._channel = light['channel'] - 1 # we use 0 based index internally
         self._type = light['type']
         self._state = False
-
         self._brightness = None
+        
         dev = domintell.add_module(self._type, self._module)
         self._is_dimmer = dev.is_dimmer()
 
@@ -102,6 +102,16 @@ class DomintellLight(LightEntity):
     def is_on(self):
         """Return true if the light is on."""
         return self._state
+
+    # FIX FOR HOME ASSISTANT 2025+
+    @property
+    def supported_color_modes(self):
+        return {ColorMode.ONOFF}
+
+    @property
+    def color_mode(self):
+        return ColorMode.ONOFF
+        
 
     def turn_on(self, **kwargs):
         """Instruct the light to turn on."""

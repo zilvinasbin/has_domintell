@@ -110,6 +110,16 @@ class DomintellLight(LightEntity):
         """Return true if the light is on."""
         return self._state
 
+    # FIX FOR HOME ASSISTANT 2025+
+    @property
+    def supported_color_modes(self):
+        return {ColorMode.ONOFF}
+
+    @property
+    def color_mode(self):
+        return ColorMode.ONOFF
+        
+
     def turn_on(self, **kwargs):
         """Instruct the light to turn on."""
         m = self._domintell.get_module(self._module)

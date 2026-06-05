@@ -66,15 +66,8 @@ class DomintellLight(LightEntity):
         self._channel = light['channel'] - 1 # we use 0 based index internally
         self._type = light['type']
         self._state = False
-
-        if dev.is_dimmer():  # DIM / dimmable DMR module
-            self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
-            self._attr_color_mode = ColorMode.BRIGHTNESS
-        else:                  # BIR relay / convector output -> on-off only
-            self._attr_supported_color_modes = {ColorMode.ONOFF}
-            self._attr_color_mode = ColorMode.ONOFF
-
         self._brightness = None
+        
         dev = domintell.add_module(self._type, self._module)
         self._is_dimmer = dev.is_dimmer()
 

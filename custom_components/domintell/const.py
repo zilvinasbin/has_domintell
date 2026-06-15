@@ -1,18 +1,34 @@
 """Constants for Domintell"""
+from homeassistant.const import Platform
 
 # Base constants
 DOMAIN = "domintell"
-VERSION = "0.2.2"
+VERSION = "1.1.0"
 
-# Configuration
-CONF_BINARY_SENSOR = "binary_sensor"
-CONF_SENSOR = "sensor"
-CONF_CLIMATE = "climate"
-CONF_SWITCH = "switch"
-CONF_LIGHT = "light"
+# Platforms set up from a config entry
+PLATFORMS = [
+    Platform.LIGHT,
+    Platform.SWITCH,
+    Platform.BINARY_SENSOR,
+    Platform.CLIMATE,
+    Platform.COVER,
+]
+
+# Configuration keys
+CONF_PING_INTERVAL = "ping_interval"
+DEFAULT_PING_INTERVAL = 60
+
+# Default Domintell module type per platform (used by YAML import)
+DEFAULT_MODULE_TYPES = {
+    "light": "BIR",
+    "switch": "TRP",
+    "binary_sensor": "IS8",
+    "climate": "TE1",
+    "cover": "TRV",
+}
 
 # OTHER
-DOMINTELL_MESSAGE = 'domintell.message'
+DOMINTELL_MESSAGE = "domintell.message"
 
 # Defaults
 DEFAULT_NAME = DOMAIN

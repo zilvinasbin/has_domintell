@@ -1,0 +1,27 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Domintell master",
+        "description": "Enter the connection details of your DETH02 module.",
+        "data": {
+          "host": "Host (ip:port, default port 17481)",
+          "password": "Password (use LOGIN if no password is set)",
+          "ping_interval": "Ping interval in seconds (0 disables)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect or log in. Check the host and password."
+    },
+    "abort": {
+      "single_instance_allowed": "Already configured. Only a single Domintell hub is supported."
+    }
+  },
+  "issues": {
+    "deprecated_yaml": {
+      "title": "Domintell YAML configuration is deprecated",
+      "description": "Your Domintell YAML configuration was imported into a config entry and is no longer used. Remove the `domintell:` section and all `platform: domintell` entries (light, switch, binary_sensor, climate, cover) from configuration.yaml, then restart Home Assistant."
+    }
+  }
+}

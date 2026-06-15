@@ -5,27 +5,31 @@ Basic Home Assistant modules mapped to domintell devices
 
 # Installation
 1. Copy contents of the *custom_components* folder to your home assistants' */config/custom_components*
-1. Configure component via configuration.yaml (see instructions below)
-1. Restart home assistant
+1. Restart Home Assistant
+1. Go to **Settings → Devices & Services → Add Integration** and search for **Domintell**
+1. Enter the DETH02 host (`ip:port`, default port 17481) and password
 
 **Note:** You should not need to install python-domintell manually, it will be installed automatically
 
-# Configuration
+# Migrating from YAML
 
-Configure connection to DETH02 module in your __configuration.yaml__
+Starting with version 1.1.0 the integration is configured via the UI and
+stores its configuration in Home Assistant's storage. If you have an
+existing YAML configuration (`domintell:` plus `platform: domintell`
+entries), it is **imported automatically** on the first restart after
+upgrading — your hub settings and all device definitions are copied into a
+config entry, and entity IDs are preserved.
 
-```
-# DOMINTEL
-domintell:
-  host: deth02_host_ip:17481
-  password: !secret deth02_pass
-```
+After the import, a Repair issue will remind you to delete the `domintell:`
+section and all `platform: domintell` entries from `configuration.yaml`,
+then restart. The legacy YAML reference below is kept only for users who
+have not migrated yet.
 
-**Notes:** 
+**Notes:**
 * Please specify UDP port for deth02 module. Default port is 17481. If port number is omited Serial connection will be used instead.
 * If your DETH02 has no password set, put 'LOGIN' instead of password.
-* It is absolutelly recomened to move host ip and passwords to secrets file!
 
+# Legacy YAML reference (pre-1.1.0)
 
 ## Configure lights
 
@@ -173,7 +177,7 @@ More info at https://pypi.org/project/python-domintell/
 * binary variable VAR (binary only)
 
 # Supported Home Assistant versions
-* core-2023.6.1 ___(Running now)___ Modified to support Python 3.11
+* core-2026.5 ___(Running now)___
 
 Not suported anymore:
 * core-2021.4.6

@@ -2,86 +2,48 @@
 Support for Domintell lights.
 
 For more details about this platform, please refer to the documentation at
-https://home-assistant.io/components/light.domintell/
+https://github.com/shamanenas/has_domintell
 """
-import asyncio
 import logging
-import voluptuous as vol
-import homeassistant.helpers.config_validation as cv
 
-# Import the device class from the component that you want to support
-from homeassistant.components.light import ATTR_BRIGHTNESS, LightEntity, PLATFORM_SCHEMA, ColorMode
-from homeassistant.const import CONF_DEVICES, CONF_NAME
+from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
+from homeassistant.const import CONF_DEVICES
 
-from .const import (DOMAIN)
-
-
-# REQUIREMENTS = ['python-domintell==0.1.0']
-# DEPENDENCIES = ['domintell']
-# DOMAIN = 'domintell'
+from .entity import DomintellEntity
 
 _LOGGER = logging.getLogger(__name__)
-
 
 DOM_BIR = 'BIR' # 8 - relay controller
 DOM_TRP = 'DMR' # 5 - relay controller
 DOM_DIM = 'DIM' # Dimmer controller
 DOM_LED = 'LED' # LED controller
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_DEVICES): vol.All(cv.ensure_list, [
-        {
-            vol.Optional('type', default=DOM_BIR): cv.string,
-            vol.Required('module'): cv.string,
-            vol.Required('channel'): cv.positive_int,
-            vol.Required(CONF_NAME): cv.string,
-            vol.Optional('location'): cv.string
-        }
-    ])
-})
 
-async def async_setup_platform(hass, config, add_devices, discovery_info=None):
-    """Set up Lights."""
-    domintell = hass.data[DOMAIN]
-    # _LOGGER.warning('Creating lights =========================== ')
-    add_devices(create_light(light, domintell) for light in config[CONF_DEVICES])
+async def async_setup_entry(hass, entry, async_add_entities):
+    """Set up Lights from a config entry."""
+    hub = entry.runtime_data
+    devices = entry.data.get(CONF_DEVICES, {}).get("light", [])
+    async_add_entities(create_light(light, hub) for light in devices)
 
 
-def create_light(light, domintell):
-        module_type = light['type']
-        # _LOGGER.warning('creating light %s', light[CONF_NAME])
-        if  module_type in [DOM_DIM]:
-            return DomintellDimmerLight(light, domintell)
-        return DomintellLight(light, domintell)
+def create_light(light, hub):
+    if light['type'] in [DOM_DIM]:
+        return DomintellDimmerLight(light, hub)
+    return DomintellLight(light, hub)
 
-class DomintellLight(LightEntity):
+
+class DomintellLight(DomintellEntity, LightEntity):
     """Representation of a Domintell Light."""
 
-    def __init__(self, light, domintell):
+    _attr_color_mode = ColorMode.ONOFF
+    _attr_supported_color_modes = {ColorMode.ONOFF}
+
+    def __init__(self, light, hub):
         """Initialize a Domintell light."""
-        self._light = light
-        self._domintell = domintell
-        self._name = light[CONF_NAME]
-        self._module = light['module']
-        self._channel = light['channel'] - 1 # we use 0 based index internally
-        self._type = light['type']
+        super().__init__(light, hub)
         self._state = False
-        self._brightness = None
-        
-        dev = domintell.add_module(self._type, self._module)
-        self._is_dimmer = dev.is_dimmer()
-
-    async def async_added_to_hass(self):
-        """Add listener for Domintell messages on bus."""
-        def _init_domintell():
-            """Initialize Domintell on startup."""
-            self._domintell.subscribe(self._on_message)
-            self.get_status()
-
-        await self.hass.async_add_job(_init_domintell)
 
     def _on_message(self, message):
-        import domintell
         if message.serialNumber == self._module:
             m = self._domintell.get_module(self._module)
             if m:
@@ -89,29 +51,9 @@ class DomintellLight(LightEntity):
             self.schedule_update_ha_state()
 
     @property
-    def name(self):
-        """Return the display name of this light."""
-        return self._name
-    
-    @property
-    def should_poll(self):
-        """Disable polling."""
-        return False
-
-    @property
     def is_on(self):
         """Return true if the light is on."""
         return self._state
-
-    # FIX FOR HOME ASSISTANT 2025+
-    @property
-    def supported_color_modes(self):
-        return {ColorMode.ONOFF}
-
-    @property
-    def color_mode(self):
-        return ColorMode.ONOFF
-        
 
     def turn_on(self, **kwargs):
         """Instruct the light to turn on."""
@@ -125,17 +67,16 @@ class DomintellLight(LightEntity):
         if m:
             m.turn_off(self._channel)
 
-    def get_status(self):
-        """Retrieve current status."""
-        m = self._domintell.get_module(self._module)
-        if m:
-            m.get_status()
 
 class DomintellDimmerLight(DomintellLight):
+    """Representation of a Domintell dimmer."""
 
-    def __init__(self, light, domintell):
-        """ Initialize domintell dimmer"""
-        DomintellLight.__init__(self, light, domintell)
+    _attr_color_mode = ColorMode.BRIGHTNESS
+    _attr_supported_color_modes = {ColorMode.BRIGHTNESS}
+
+    def __init__(self, light, hub):
+        """Initialize a Domintell dimmer."""
+        super().__init__(light, hub)
         self._brightness = 0
 
     def _on_message(self, message):
@@ -149,15 +90,6 @@ class DomintellDimmerLight(DomintellLight):
     @property
     def brightness(self):
         return int(self._brightness * 255 / 100)
-
-
-    @property
-    def supported_color_modes(self):
-        return {ColorMode.BRIGHTNESS}
-
-    @property
-    def color_mode(self):
-        return ColorMode.BRIGHTNESS
 
     def turn_on(self, **kwargs):
         """Instruct the light to turn on."""
